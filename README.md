@@ -91,6 +91,8 @@ Você visualizará a tela Padrão do Servidor Apache. Terminando assim a 1ª par
 
 <img src = "img/Apache-fedora.png" alt = "Tela do servidor Apache Fedora">
 
+*****
+
 ## Vamos agora instalar o serviço de Banco de Dados MySQL. Como opção prática e robusta, recomendo o MariaDB.
 
 Para instalá-lo, vamos dar este comando no terminal:
@@ -150,7 +152,7 @@ Password updated successfully!
 ```
 
 Pronto ! Sua senha root agora está configurada 🙂
-
+*****
 ## Agora só está faltando instalarmos o serviço PHP
 
 Utilizaremos o comando:
@@ -276,5 +278,5 @@ Agora é só testar seu serviço phpMyAdmin. Na barra de endereços em seu naveg
 Você será direcionado para a tela de login do ambiente. Nesta tela, você deve entrar com o usuário root e a senha que você definiu na configuração do MariaDB.
 
 Pronto, seu LAMP está preparado para o uso. Você pode agora criar ou importar seus bancos, e testar seus fontes com muita facilidade.
-
+*****
 ### <b> Usado apenas para anotação e facilitação na instalação do LAMP do site: <a href = "https://marcomapa.com/artigos/?p=994"> marcomapa.com/artigos </a>
