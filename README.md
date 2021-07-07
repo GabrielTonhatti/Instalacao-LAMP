@@ -277,4 +277,4 @@ Você será direcionado para a tela de login do ambiente. Nesta tela, você deve
 
 Pronto, seu LAMP está preparado para o uso. Você pode agora criar ou importar seus bancos, e testar seus fontes com muita facilidade.
 
-### <b> Usado apenas para anotação e facilitação na instalação do LAMP do site: [marcomapa.com/artigos](/https://marcomapa.com/artigos/?p=994)
+### <b> Usado apenas para anotação e facilitação na instalação do LAMP do site: <a href = "https://marcomapa.com/artigos/?p=994"> marcomapa.com/artigos </a>
