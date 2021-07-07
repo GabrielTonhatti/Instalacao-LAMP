@@ -214,6 +214,7 @@ Sempre que você instalar algum novo módulo, lembre-se de reiniciar o serviço 
 ```
 systemctl restart httpd
 ```
+*****
 
 ## E para finalizarmos, vamos instalar um ambiente gráfico para gerenciarmos nossos Bancos de Dados. E para tal tarefa, nada melhor do que nosso querido phpMyAdmin 😀
 
