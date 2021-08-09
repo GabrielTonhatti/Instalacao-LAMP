@@ -1,6 +1,6 @@
 <img src = "img/lamp_linux.png" alt = "LAMP">
 
-<a herf = "#ubuntu"> Ubuntu </a> <a href ="#fedora">Fedora</a>
+<a href = "#ubuntu"> Ubuntu </a> <a href ="#fedora">Fedora</a>
 
 
 
