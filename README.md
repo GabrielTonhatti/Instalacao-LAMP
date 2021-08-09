@@ -1,5 +1,344 @@
 <img src = "img/lamp_linux.png" alt = "LAMP">
 
+<a herf = "#ubuntu"> Ubuntu </a> <a href ="#fedora">Fedora</a>
+
+
+
+ Usado apenas para anotação e facilitação na instalação do LAMP do site: <a href = "https://marcomapa.com/artigos/?p=994"> marcomapa.com/artigos </a>, e do site: <a href="https://sempreupdate.com.br/como-instalar-do-lamp-no-ubuntu/"> sempreupdate</a>.
+
+Para instalar o MariaDB usei a explicação da instalação do LAMP no Ubuntu 16.04 LTS pelo site: <a href="https://sempreupdate.com.br/como-instalar-apache-mariadb-php7-lamp-stack-ubuntu-16-04-lts/"> sempreupdate</a>.
+
+<p id = "ubuntu">
+
+<img src = "img/Ubuntu_logoib.svg" width="400">
+
+# Como instalar do LAMP no Ubuntu
+
+Na dica de hoje, iremos mostrar o passo a passo de como instalar do **LAMP** no **Ubuntu**. Este processo de instalação funcionar em qualquer versão do Ubuntu. No entanto, pode ser que no nomento em que você for instalar o LAMP no Ubuntu ou distribuição derivada, a versão das imagens já não seja correspondente com a sua. **LAMP** é o acrônimo que refere-se as primeiras letras de:
+
+- **L**inux;
+- **A**pache (servidor web);
+- **M**ariaDB ou **M**ySQL (software de banco de dados);
+- **P**HP (linguagens de programação) ou **P**ython.
+
+Essa combinação de softwares tornou-se popular devido serem gratuitos e de fácil adaptação. Quando usadas juntas, suportam servidores de aplicações web.
+
+###  Passo 0 - Atualização do Sistema Operacional
+
+Recomenda-se que antes de realizar a instalação de qualquer programa no **Linux**, você deve realizar a atualização do mesmo. Para realizar a atualização da lista de repositórios, realize o seguinte comando:
+
+```bash
+sudo apt update
+```
+
+Para a atualização dos comandos propriamente ditos, execute o comando:
+
+```bash
+sudo apt upgrade -y
+```
+
+### Passo 1 - Instalação do Apache
+
+```bash
+sudo apt install -y apache2
+```
+
+Para vermos se ele está ativo basta digitar:
+
+```bash
+sudo systemctl status apache2
+```
+
+Ele deve retornar algo como isso:
+
+<img src = "img/apache-status.png">
+
+Se ele aparecer com o "Active: active(running)" é porque está funcionando certinho, caso não apareça basta iniciar ele:
+
+```bash
+sudo systemctl start apache2
+```
+
+E depois testar de novo para ver se ele foi ativado:
+
+```bash
+sudo systemctl status apache2
+```
+
+Para fazer com que ele inicie junto do sistema, basta digitar:
+
+```bash
+sudo systemctl enable apache2
+```
+
+Para testar se o **Apache** está funcionando corretamente, devemos digitar **<a href = "http://localhost/">localhost</a>** na barra de endereços do navegador de sua preferência. Tal mensagem deverá aparecer:
+
+<img src = "img/apache-ubuntu.png">
+
+### Passo 2 - Instação do PHP
+
+Para instalação do **PHP** juntamente com suas dependências:
+
+```bash
+sudo apt install -y php php-cli php-common php-gd php-mbstring php-intl php-xml php-zip php-pear libapache2-mod-php
+```
+
+Para criar uma página de teste **PHP**:
+
+```bash
+echo “<?php phpinfo(); ?>” | sudo tee /var/www/html/test.php | sudo service apache2 restart
+```
+
+Para testar o **PHP** no navegador, digite na página de endereços: **<a href = "http://localhost/test.php"> localhost/test.php</a>.**
+
+Tal janela irá aparecer:
+
+<img src = "img/testephp.png">
+
+Caso aparece uma tela em branco, basta editar o arquivo test.php:
+
+```bash
+sudo nano /var/www/html/test.php
+```
+
+E depois adicionar o código em PHP para testar a página caso o comando anterior não tenha escrito no arquivo:
+
+```php
+<?php
+
+phpinfo();
+
+?>
+```
+
+E depois so reiniciais o apache:
+
+```bash
+sudo service apache2 restart
+```
+
+### Passo 3 - Instação e Configuração do Mysql
+
+Neste caso não vamos instalar o MySQL Server, e sim o MariaDB Server por ser mais completo. MariaDB é uma substituição drop-in para o MySQL. Ele é desenvolvido por ex-membros da equipe do MySQL que se preocupam que a Oracle possa transformar o MySQL em um produto de código fechado. Muitas distribuições e empresas Linux migraram para MariaDB. Então vamos instalar o MariaDB em vez do MySQL.
+
+```bash
+sudo apt-get install mariadb-server mariadb-client
+```
+
+**Depois de instalado, o servidor MariaDB geralmente é iniciado automaticamente. Use systemctl para verificar seu status:**
+
+```bash
+systemctl status mysql
+```
+
+**Exemplos de saída:**
+
+<img src = "img/mariadb-status.png">
+
+**Se não estiver em execução, inicie-o com este comando:**
+
+``` bash
+sudo systemctl start mysql
+```
+
+Para ativar o MariaDB automaticamente quando o Ubuntu for reinicializado execute o comando abaixo:
+
+```bash
+sudo systemctl enable mysql
+```
+
+**Agora execute o script de segurança pós-instalação:**
+
+```bash
+sudo mysql_secure_installation
+```
+
+Com isso, aparecerá no terminal o setup para que você possa configurar a senha root. Observe a linha:
+
+```bash
+‘Change the root password? [Y/n] y ‘
+```
+
+Pressione a tecla **'y'** e dê um enter, (caso seu Linux esteja em português, substitua o ‘y’ por ‘s’).
+
+```
+New password:
+```
+
+Digite para criar sua senha root e dê enter
+
+```
+Re-enter new password:
+```
+
+Redigite a sua senha criada no passo anterior e dê um novo enter.
+
+```
+Password updated successfully!
+```
+
+Pronto ! Sua senha root agora está configurada 🙂
+
+Para acessar o console do [Mysql](https://sempreupdate.com.br/?s=mysql) pelo terminal:
+
+```bash
+sudo mysql -u root -p
+```
+
+E digite a senha que você configurou para o MariaDB.
+
+O terminal mudará como mostra a figura:
+
+<img src = "img/mariaDB.png">
+
+Agora, iremos testar os comandos básicos no terminal. Primeiramente mostrar os bancos de dados:
+
+```mysql
+show databases;
+```
+
+<img src = "img/mariaDB2.png">
+
+Para criar um novo banco de dados de nome meu_banco:
+
+```mysql
+create database meu_banco;
+```
+
+<img src = "img/mariaDB3.png">
+
+
+
+Digite o primeiro comando novamente para ver ele no seus bancos de dados:
+
+```mysql
+show databases;
+```
+
+<img src = "img/mariaDB4.png">
+
+Para apagar o banco de dados de nome meu_banco:
+
+```mariadb
+drop database meu_banco;
+```
+
+<img src = "img/mariaDB5.png">
+
+E confira os bancos de dados novamente:
+
+```mariadb
+show databases;
+```
+
+<img src = "img/mariaDB6.png">
+
+
+
+### Criando um novo usuário para banco de dados MySQL:
+
+Ainda na interface do MySQL/MariaDB, vamos agora criar um novo usuário para gerenciar seus bancos de dados, como padrão tem o usuário 'root' do linux, que é oque tem permissão total sobre o sistema, mas se você prefere criar o seu próprio usuário, basta digitar:
+
+```mysql
+create user 'seu_usuario'@'localhost' identified by 'sua_senha';
+```
+
+E depois dar permissão total para todos os bancos de dados para o usuário que você criou:
+
+```mariadb
+grant all privileges on *.* to 'seu_usuario'@'localhost' with grant option;
+```
+
+Exemplo:
+
+```mysql
+create user 'gabriel'@'localhost' identified by 'gabriel123';
+```
+
+```mariadb
+grant all privileges on *.* to 'gabriel'@'localhost' with grant option;
+```
+
+Caso você queirar criar um usuário que tenha permisão a apenas algum/alguns bancos de dados, digite:
+
+``` mysql
+grant all privileges on meu_banco.* to 'gabriel'@'localhost' with grant option;
+```
+
+Nesse caso, o meu usuário para o banco de dados vai ter acesso apenas ao banco de dados "meu_banco", todos os outros bancos de dados que você criar so poderam ser acessados pelo usuário "root", ou algum outro usuário que você tenha dado permissão total aos bancos de dados.
+
+Finalizadas as permissões, você deve definir para os seus novos usuários os privilégios para manipulação do Banco de Dados. Então, sempre recarregue todos os privilégios.
+
+```mariadb
+flush privileges;
+```
+
+<img src = "img/mariaDB7.png">
+
+Caso você queira ver todos os usuários que tem para os bancos de dados e as conexões de cada um, basta digitar:
+
+```mariadb
+select user, host from mysql.user;
+```
+
+<img src = "img/mariaDB8.png">
+
+Caso você queira apagar algum usuário basta digitar:
+
+```mariadb
+drop user 'usuarioExemplo'@'localhost';
+```
+
+<img src = "img/mariaDB9.png">
+
+Ou também podemos realizar a deleção do usuário com o comando delete:
+
+```mariadb
+delete from mysql.user where user = 'usuarioExemplo';
+```
+
+<img src = "img/mariaDB10.png">
+
+E o usuário que você escolheu será deletado.
+
+Saia do **MySQL** com o comando **exit;** ou com o jogo de teclas **Control+d.** Depois, entre com seu novo usuário novamente no terminal do sistema operacional:
+
+```bash
+sudo mysql -u seu_usuario -p
+```
+
+Digite a senha que você registrou no MySQL.
+
+### Passo 4 - Instalação e configuração do phpMyAdmin
+
+Instalação e configuração do **phpMyAdmin**
+
+```bash
+sudo apt install -y phpmyadmin
+```
+
+<img src ="img/phpmyadmin-install.webp">
+
+Marque a opção **apache2** usando a tecla **ESPAÇO** e mover até o **OK** com a tecla **TAB**.
+
+Depois selecione **sim:**
+
+<img src ="img/phpmyadmin.webp">
+
+Caso necessite, utilize selecione uma senha para **phpMyAdmin**. Para testá-lo no navegador, digite na barra de endereços: **<a href = "http://localhost/phpmyadmin/">localhost/phpmyadmin</a>**.
+
+A seguinte tela irá ser exibida:
+
+<img src ="img/myadmin.png">
+
+Digite seu usuário e senha registrados na configuração do **MySQL**. Caso você queira entrar com o root, use a senha que você criou da parte da configuração do MySQL com o comando "sudo mysql_secure_installation", e se mesmo assim não entrar no phpMyAdmin, crie um usuário com o nome "root" no MySQL e de permissão total para ele.
+
+</p>
+
+<p id = "fedora">
+
+<img src = "img/fedora.png" width="400">
+
 Instalando Servidor Apache, MySQL e PHP (LAMP) no Linux (Fedora, Red Hat e CentOS)
 ===================================================================================
 
@@ -11,7 +350,7 @@ Vamos aprender a instalar os serviços, lembrando que o aprendido aqui também v
 
 O primeiro passo para iniciarmos a instalação, é abrir o terminal, e em seguida logar como usuário root, digitando:
 
-```
+```bash
  su
 ```
 
@@ -21,31 +360,31 @@ agora insira sua senha de root, configurada quando você instalou sua distro Lin
 
 Após feito isso, vamos iniciar instalando o Apache, com o comando:
 
-```
+```bash
 dnf install httpd -y
 ```
 
 Caso sua máquina esteja utilizando alguma versão anterior do Fedora, o comando retornará erro, então, substitua o ‘dnf’ por ‘yum’, ficando assim:
 
-```
+```bash
 yum install httpd -y
 ```
 
 Agora vamos ativar o serviço de httpd para iniciar automaticamente em cada inicialização do seu sistema operacional:
 
-```
+```bash
 systemctl enable httpd
 ```
 
 Iniciando o serviço httpd pela 1ª vez usando o seguinte comando:
 
-```
+```bash
 systemctl start httpd
 ```
 
 Como nem tudo é perfeito, pode aparecer o seguinte erro:
 
-```
+```bash
 ‘Job for httpd.service failed. See 'systemctl status httpd.service' and
 'journalctl -xn' for details.’
 ```
@@ -53,25 +392,25 @@ Como nem tudo é perfeito, pode aparecer o seguinte erro:
 Para resolver, elimine todo o conteúdo encontrado em ‘/ etc / hostname’ .
 Coloque "Localhost" em "Servername" em ‘/ etc / httpd / conf / httpd.conf’ e ajuste o firewall para permitir que o serviço httpd seja acessado de clientes remotos, utilizando os seguintes comandos:
 
-```
+```bash
 firewall-cmd --permanent –add-service=http
 ```
 
 e
 
-```
+```bash
 firewall-cmd --permanent –add-service=https
 ```
 
 Reinicie o serviço de seu Firewall:
 
-```
+```bash
 firewall-cmd --reload
 ```
 
 suba o serviço httpd, utilizando:
 
-```
+```bash
 systemctl start httpd
 ```
 
@@ -97,25 +436,25 @@ Você visualizará a tela Padrão do Servidor Apache. Terminando assim a 1ª par
 
 Para instalá-lo, vamos dar este comando no terminal:
 
-```
+```bash
 dnf install mariadb mariadb-server -y
 ```
 
 Assim como no caso da instalação do Apache, caso a versão de sua distro retorne erro, utilize:
 
-```
+```bash
 yum install mariadb mariadb-server -y
 ```
 
 Após a instalação, vamos ativar o início automático dos serviços, sempre que o computador seja ligado:
 
-```
+```bash
 systemctl enable mariadb
 ```
 
 E iniciá-lo pela 1ª vez:
 
-```
+```bash
 systemctl start mariadb
 ```
 
@@ -123,31 +462,31 @@ O próximo passo é Definir a senha Root de seus bancos MySQL, pois por padrão,
 
 Aplique o comando:
 
-```
+```bash
 mysql_secure_installation
 ```
 
 Com isso, aparecerá no terminal o setup para que você possa configurar a senha root. Observe a linha:
 
-```
+```bash
 ‘Change the root password? [Y/n] y ‘
 ```
 
 Pressione a tecla <b> 'y' </b> e dê um enter, (caso seu Linux esteja em português, substitua o ‘y’ por ‘s’).
 
-```
+```bash
 New password:
 ```
 
 Digite para criar sua senha root e dê enter
 
-```
+```bash
 Re-enter new password:
 ```
 
 Redigite a sua senha criada no passo anterior e dê um novo enter.
 
-```
+```bash
 Password updated successfully!
 ```
 
@@ -157,13 +496,13 @@ Pronto ! Sua senha root agora está configurada 🙂
 
 Utilizaremos o comando:
 
-```
+```bash
 dnf install php -y
 ```
 
 Ou no caso de versão anterior do Linux:
 
-```
+```bash
 yum install php -y
 ```
 
@@ -171,7 +510,7 @@ Feito isso, vamos testá-lo.
 
 Vamos criar um arquivo chamado ‘testphp.php’ na pasta principal da instalação do Apache:
 
-```
+```bash
 vi /var/www/html/testphp.php
 ```
 
@@ -187,7 +526,7 @@ phpinfo();
 
 Reinicie o serviço httpd:
 
-```
+```bash
 systemctl restart httpd
 ```
 
@@ -199,32 +538,32 @@ Será exibido todos os detalhes sobre o PHP como a versão, data de construção
 
 Vamos instalar o módulo php-mysql com o seguinte comando:
 
-```
+```bash
 dnf install php-mysqli -y
 ```
 
 ou
 
-```
+```bash
 yum install php-mysqli -y
 ```
 
 Sempre que você instalar algum novo módulo, lembre-se de reiniciar o serviço utilizando:
 
-```
+```bash
 systemctl restart httpd
 ```
 *****
 
 ## E para finalizarmos, vamos instalar um ambiente gráfico para gerenciarmos nossos Bancos de Dados. E para tal tarefa, nada melhor do que nosso querido phpMyAdmin 😀
 
-```
+```bash
 dnf install phpmyadmin -y
 ```
 
 ou
 
-```
+```bash
 yum install phpmyadmin -y
 ```
 
@@ -232,13 +571,13 @@ Por padrão, o phpMyAdmin pode ser acessado apenas de seu localhost. Para acess�
 
 Edite o arquivo ‘/etc/httpd/conf.d/phpMyAdmin.conf’:
 
-```
+```bash
 vi /etc/httpd/conf.d/phpMyAdmin.conf
 ```
 
 Localize os trechos:
 
-```vim
+```bash
 <RequireAny>
 
 Require ip 127.0.0.1
@@ -252,7 +591,7 @@ Require all granted
 
 Altere para :
 
-```vim
+```bash
 <RequireAny>
 
 #Require ip 127.0.0.1
@@ -268,7 +607,7 @@ Observação. Existe mais de um único trecho neste arquivo onde você precisar�
 
 Salve e feche este arquivo de configuração e Reinicie seu o serviço:
 
-```
+```bash
 systemctl restart httpd
 ```
 
@@ -279,5 +618,5 @@ Agora é só testar seu serviço phpMyAdmin. Na barra de endereços em seu naveg
 Você será direcionado para a tela de login do ambiente. Nesta tela, você deve entrar com o usuário root e a senha que você definiu na configuração do MariaDB.
 
 Pronto, seu LAMP está preparado para o uso. Você pode agora criar ou importar seus bancos, e testar seus fontes com muita facilidade.
-*****
-### <b> Usado apenas para anotação e facilitação na instalação do LAMP do site: <a href = "https://marcomapa.com/artigos/?p=994"> marcomapa.com/artigos </a>
+
+</p>
