@@ -1,15 +1,14 @@
 <img src = "img/lamp_linux.png" alt = "LAMP">
 
-<a href = "#ubuntu"> Ubuntu </a> <a href ="#fedora">Fedora</a>
+<a href = "#ubuntu"> Ubuntu </a> <a href ="#fedora">Fedora</a> <a href ="#arch">Arch Linux</a>
 
 
 
- Usado apenas para anotação e facilitação na instalação do LAMP do site: <a href = "https://marcomapa.com/artigos/?p=994"> marcomapa.com/artigos </a>, e do site: <a href="https://sempreupdate.com.br/como-instalar-do-lamp-no-ubuntu/"> sempreupdate</a>.
+ Usado apenas para anotação e facilitação na instalação do LAMP do site: <a href = "https://marcomapa.com/artigos/?p=994"> marcomapa.com/artigos </a>, do site: <a href="https://sempreupdate.com.br/como-instalar-do-lamp-no-ubuntu/"> sempreupdate</a> e do site: <a href = "https://cadernoscicomp.com.br/instalar-lamp-no-antergos-arch-linux/">cadernoscicomp.com.br</a> e do Git do <a href = "https://gist.github.com/pokisin/a294d2993c50c43a579bb09cef66d98d">pokisin</a>.
 
 Para instalar o MariaDB usei a explicação da instalação do LAMP no Ubuntu 16.04 LTS pelo site: <a href="https://sempreupdate.com.br/como-instalar-apache-mariadb-php7-lamp-stack-ubuntu-16-04-lts/"> sempreupdate</a>.
 
 <p id = "ubuntu">
-
 <img src = "img/Ubuntu_logoib.svg" width="400">
 
 # Como instalar do LAMP no Ubuntu
@@ -618,5 +617,226 @@ Agora é só testar seu serviço phpMyAdmin. Na barra de endereços em seu naveg
 Você será direcionado para a tela de login do ambiente. Nesta tela, você deve entrar com o usuário root e a senha que você definiu na configuração do MariaDB.
 
 Pronto, seu LAMP está preparado para o uso. Você pode agora criar ou importar seus bancos, e testar seus fontes com muita facilidade.
+
+</p>
+
+<p id = "arch">
+
+<img src = "img/arch-linux.png" width = "400">
+
+
+
+# [Instalar LAMP no Antergos (Arch Linux)](https://cadernoscicomp.com.br/instalar-lamp-no-antergos-arch-linux/)
+
+## Instalando o Apache
+
+Para instalar o Apache abra o terminal e digite:
+
+```bash
+sudo pacman -S apache
+```
+
+Para iniciar o Apache digite:
+
+```bash
+sudo systemctl start httpd
+```
+
+Caso queira colocar o Apache para iniciar com o sistema digite
+
+```bash
+sudo systemctl enable httpd
+```
+
+Testando o Apache:
+
+Agora para testar o Apache abra o seu navegador e na barra de endereços simplesmente digite *localhost* deve aparecer algo semelhante a figura abaixo:
+
+<img src = "img/lamp-11.png">
+
+Se apareceu uma página de erro 403 edite o arquivo *httpd.conf* comentando a seguinte linha colocando a cerquilha(#) antes dela:
+
+> #LoadModule unique_id_module modules/mod_unique_id.so
+
+Agora vamos criar um simples arquivo html no diretório padrão do Apache que fica em /srv/http, então navegue até esse diretório com:
+
+```bash
+cd /srv/http
+sudo nano index.html
+```
+
+E cria o arquivo conforme abaixo:
+
+```html
+<html>
+<head> 
+   <title>Teste do Apache</title>
+</head>
+<body>
+   <h1>Apache Funcionando</h1>
+</body>
+</html>
+```
+
+No seu navegador regarregue *localhost* e você deve ver algo como a figura abaixo:
+
+<img src = "img/lamp-22.png">
+
+## Instalando o Myslq
+
+Na verdade o que você vai instalar é o MariaDB que tem perfeita compatibilidade com o MySql. Para instala-lo digite:
+
+```bash
+sudo pacman -S mysql
+```
+
+Irá aparecer uma escolha de opções entre o próprio *mariadb* da distribuição e o pacote *percona-server*:
+
+Digite um número (padrão=1):
+
+Aqui nós deixamos o padrão.
+
+Para iniciar o MariaDB de o seguinte comando:
+
+```bash
+sudo systemctl start mysqld
+```
+
+Caso apareça a seguinte mensagem de erro:
+
+> Job for mariadb.service failed because the control process exited with error code.
+> See “systemctl status mariadb.service” and “journalctl -xe” for details.
+
+de o seguinte comando no terminal:
+
+```bash
+sudo mysql_install_db --user=mysql --basedir=/usr/ --ldata=/var/lib/mysql/
+```
+
+Da mesma forma que no apache se desejar incluir o MariaDB na inicialização do sistema digite:
+
+```bash
+sudo systemctl enable mysqld
+```
+
+Agora vamos concluir a instalação com segurança digitando o comando abaixo:
+
+```bash
+sudo mysql_secure_installation
+```
+
+aqui logo no início será pedida a senha para o usuário do banco de dados de apenas *enter* (o usuário é o root e a sua senha ainda não foi definida) logo após será pedido que você entre com uma nova senha para o usuário digite a senha que desejar e confirme logo depois basta dar *enter* até o final.
+
+## Instalando o PHP
+
+Simplesmente digite no terminal
+
+```bash
+sudo pacman -S php php-apache
+```
+
+Veja a vesão da sua instalação do PHP com o seguinte comando:
+
+```bash
+php --version
+```
+
+### Vamos configurar o Apache para funcionar em conjunto com o PHP:
+
+```bash
+  sudo nano /etc/httpd/conf/httpd.conf
+```
+
+- Vamos comentamos ou substituir a linha:
+
+  > LoadModule mpm_event_module modules/mod_mpm_event.so 
+
+  com o seguinte:
+
+  > LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+
+- Posteriormente, no final do mesmo arquivo, adicionamos o seguinte bloco se você usar php5:
+
+  ```bash
+  # Use for PHP 5.x:
+  LoadModule php5_module modules/libphp5.so
+  AddHandler php5-script php
+  Include conf/extra/php5_module.conf
+  
+  # para cargar los index.php si se encuentran en el directorio
+  <IfModule dir_module>
+    <IfModule php5_module>
+    	DirectoryIndex index.php index.html
+    	<FilesMatch "\.php$">
+    		SetHandler application/x-httpd-php
+    	</FilesMatch>
+    	<FilesMatch "\.phps$">
+    		SetHandler application/x-httpd-php-source
+    	</FilesMatch>
+    </IfModule>
+  </IfModule>
+  ```
+
++ Se você estiver usando o php7 adicione o seguinte bloco de código:
+
+  ```bash
+  # Use for PHP 7.x:
+  LoadModule php7_module modules/libphp7.so
+  AddHandler php7-script php
+  Include conf/extra/php7_module.conf
+  
+  # para cargar los index.php si se encuentran en el directorio
+  <IfModule dir_module>
+    <IfModule php7_module>
+    	DirectoryIndex index.php index.html
+    	<FilesMatch "\.php$">
+    		SetHandler application/x-httpd-php
+    	</FilesMatch>
+    	<FilesMatch "\.phps$">
+    		SetHandler application/x-httpd-php-source
+    	</FilesMatch>
+    </IfModule>
+  </IfModule>
+  ```
+
++ Se você estiver usando o php8 adicione o seguinte bloco de código:
+
+  ```bash
+  # Use for PHP 8.x:
+  LoadModule php_module modules/libphp.so
+  AddHandler php-script php
+  Include conf/extra/php_module.conf
+  
+  # para cargar los index.php si se encuentran en el directorio
+  <IfModule dir_module>
+    <IfModule php_module>
+    	DirectoryIndex index.php index.html
+    	<FilesMatch "\.php$">
+    		SetHandler application/x-httpd-php
+    	</FilesMatch>
+    	<FilesMatch "\.phps$">
+    		SetHandler application/x-httpd-php-source
+    	</FilesMatch>
+    </IfModule>
+  </IfModule>
+  ```
+
+  E finalmente reinicie o Apache:
+
+  ```bash
+  sudo systemctl restart httpd
+  ```
+
+  Vamos agora testar o PHP para isso crie um arquivo de nome *info.php:*
+
+  ```php
+  <?php
+  phpinfo();
+  ?>
+  ```
+
+  e coloque ou no diretório */srv/http* ou em sua *public_html*. Para testa-lo basta digitar na barra de endereços localhost/info.php ou localhost/~seu_nome_usuario/info.php sua saída deve ser semelhante a:
+
+  <img src = "img/php.png">
 
 </p>
